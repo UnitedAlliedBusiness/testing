@@ -1,61 +1,21 @@
 def kubemanager_ip = "10.10.20.10"
 def kubemanager_registry_ip = "10.10.20.11"
 def kubemanager_token = "token-tjxjv:j7r8q2d2q7xfdfdmwn5zbt9kkcsktl5xc2tkv4lz9l627gffnh8htg"
-def kubemanager_project = "p/c-7cxkm:p-4zlsv"
-podTemplate(yaml: """
-apiVersion: v1
-kind: Pod 
-spec:
-volumes: 
--name: docker-socket
-emptyDir: {}
--name: sangfor-registry-ca
-emptyDir: {}
--name: workspace
-emptyDir: {}
-containers: 
--name: jnlp
-image: registry.sangfor.com/apps/inbound-agent:4.6-1
-args: ['\$(JENKINS_SECRET)','\$(JENKINS_NAME)']
-volumeMounts:
--name: workspace
-mountPath: /workspace
--name: docker
-image: registry.sangfor.com/apps/docker:20.10.20
-command: cat 
-tty: true
-volumeMounts:
--name: docker-socket
-mountPath: /var/run
--name: workspace
-mountPath: /workspace
--name: docker-daemon 
-image: registry.sangfor.com/apps/docker:20.10.2-dind
-securityContext:
-privileged: true
-volumeMounts:
--name: docker-socket 
-mountPath: /var/run
--name: sangfor-registry-ca
-mountPath: /etc/docker/certs.docker
--name: workspace
-mountPath: /workspace
--name: cd-tools 
-image: registry.sangfor.com/apps/kubemanager-cd:sangfor 
-imagePullPolicy: Always
-command: cat 
-tty: true
-volumeMounts:
--name: sangfor-registry-ca
-mountPath: /etc/docker/certs.d 
--name: workspace
-mountPath: /workspace
-"""){
+def kubemanager_project = "c-7cxkm:p-4zlsv"
+podTemplate(containers: [
+    containerTemplate(name: 'docker', image: 'docker:20.10.2', ttyEnabled: true, command: 'cat'),
+    containerTemplate(name: 'docker-daemon', image: 'registry.sangfor.com/apps/docker:20.10.2-dind', ttyEnabled: true, command: 'cat', privileged: false),
+    containerTemplate(name: 'cd-tools', image: 'registry.sangfor.com/apps/kubemanager-cd:sangfor', ttyEnabled: true, command: 'cat', alwaysPullImage: true)
+  ],
+  volumes: [hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
+  hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
+  emptyDirVolume(mountPath: '/etc/docker/certs.d', memory: true),
+  ]) {
       node(POD_LABEL){
           stage('Clone'){
               container('jnlp'){
                     sh """
-                    git clone -b modify-repo-url https://github.com/ctlaltlaltc/docker-nginx.git /workspace/docker-nginx
+                    git clone -b modify-repo-url https://github.com/ctlaltlaltc/docker-nginx.git /home/jenkins/agent/workspace/docker-nginx
                     """
               }
           }
@@ -65,8 +25,9 @@ mountPath: /workspace
                     # Setting sangfor registry private certificates
                     # Setting sangfor kubemanager registry ip
                     mkdir -p /etc/docker/cert.d/$kubemanager_registry_ip
-                    wget --no-check-certificate -q -O- https://$kubemanager_registry_ip/api/systeminfo/getcert >\
-                    /etc/docker/certs.d/$kubemanager_registry_ip/ca.crt
+                    cd /etc/docker/cert.d/$kubemanager_registry_ip
+                    wget --no-check-certificate https://$kubemanager_registry_ip/api/systeminfo/getcert > /etc/docker/cert.d/$kubemanager_registry_ip/ca.crt
+                    ls
                     """
               }
           }
@@ -74,17 +35,18 @@ mountPath: /workspace
               container('docker'){
                     sh """
                     docker version 
-                    export DOCKER_BUILDKIT=1
-                    docker build --progress plain -t $kubemanager_registry_ip/library/nginx-devops:latest \
-                    /workspace/docker-nginx/stable/alpine
+                    export DOCKER_BUILDKIT=0
+                    docker version -f '{{.Server.Experimental}}'
+                    docker build -t $kubemanager_registry_ip/testing/nginx-devops:latest /home/jenkins/agent/workspace/docker-nginx/stable/alpine
                     """
               }
           }
           stage('Publish'){
               container('docker'){
                     sh """
-                    docker login -u admin -p Harbot12345 $kubemanager_registry_ip
-                    docker push $kubemanager_registry_ip/library/nginx-devops:latest
+                    docker logout
+                    docker login -u secure365 -p @Demo123 $kubemanager_registry_ip
+                    docker push $kubemanager_registry_ip/testing/nginx-devops:latest
                     """
               }
           }
@@ -92,20 +54,21 @@ mountPath: /workspace
               container('cd-tools'){
                     sh """
                     kubemanager login https://$kubemanager_ip --skip-verify --token $kubemanager_token --context $kubemanager_project
-                    if ! kubemanager kebectl get namespace devops; then 
-                        kebemanager kubectl create namespace devops
+                    if ! kubemanager kubectl get namespace devops; then 
+                        kubemanager kubectl create namespace devops
                     fi
                     # rollout updates
-                    if ! kubemanager kebectl -n devops get deploy nginx; then 
-                        kebemanager kubectl -n devops create deployment nginx --image=$kubemanager_registry_ip/library/nginx-devops:latest
+                    kubemanager kubectl get deployments
+                    if ! kubemanager kubectl get deploy nginx; then 
+                        kubemanager kubectl create deployment nginx --image=$kubemanager_registry_ip/testing/nginx-devops:latest
                     else 
-                        kubemanager kubectl -n devops rollout restart deployment/nginx
+                        kubemanager kubectl rollout restart deployment/nginx
                     fi
                     # expose services
-                    if ! kubemanager kubectl -n devops get service nginx-http; then
-                        kebemanager kebectl -n devops expose deployment nginx --port=80 --target-port=80 --name=nginx-http
+                    if ! kubemanager kubectl get service nginx-http; then
+                        kubemanager kubectl expose deployment nginx --port=80 --target-port=80 --name=nginx-http
                     fi
-                    kubemanager kubectl -n devops wait --for=condition=available --timeout=600s deployment/nginx
+                    kubemanager kubectl wait --for=condition=available --timeout=600s deployment/nginx
                     """
               }
           }
