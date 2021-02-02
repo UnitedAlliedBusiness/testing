@@ -15,7 +15,9 @@ podTemplate(containers: [
           stage('Clone'){
               container('jnlp'){
                     sh """
-                    git remote -v origin https://github.com/UnitedAlliedBusiness/testing.git
+                    git branch: 'master',
+    credentialsId: 'Github',
+    url: 'ssh://git@github.com:UnitedAlliedBusiness/testing.git'
                     git clone -b modify-repo-url https://github.com/UnitedAlliedBusiness/testing.git /home/jenkins/agent/workspace/kwsp
                     """
               }
