@@ -15,9 +15,8 @@ podTemplate(containers: [
           stage('Clone'){
               container('jnlp'){
                     sh """
-                    git branch master      // 在本地git仓库创建分支 
-                    git checkout master   // 切换到该分支
-                    git branch --set-upstream-to=origin/master
+                    git remote add origin https://github.com/UnitedAlliedBusiness/testing.git
+                    git remote -v
                     git clone -b modify-repo-url https://github.com/UnitedAlliedBusiness/testing.git /home/jenkins/agent/workspace/kwsp
                     """
               }
