@@ -69,9 +69,9 @@ podTemplate(containers: [
                     fi
                     # expose services
                     if ! kubemanager kubectl get service nginx-http; then
-                        kubemanager kubectl expose deployment nginx --port=80 --target-port=80 --name=nginx-http
+                        kubemanager kubectl expose deployment kwsp --port=80 --target-port=80 --name=kwsp
                     fi
-                    kubemanager kubectl wait --for=condition=available --timeout=600s deployment/nginx
+                    kubemanager kubectl wait --for=condition=available --timeout=600s deployment/kwsp
                     """
               }
           }
