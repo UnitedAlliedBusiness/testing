@@ -19,7 +19,6 @@ podTemplate(containers: [
                     git remote add origin https://github.com/UnitedAlliedBusiness/testing.git
                     git remote -v
                     git clone https://github.com/UnitedAlliedBusiness/testing.git /home/jenkins/agent/workspace/kwsp
-                    git clone -b modify-repo-url https://github.com/ctlaltlaltc/docker-nginx.git /home/jenkins/agent/workspace/docker-nginx
                     """
               }
           }
@@ -42,7 +41,6 @@ podTemplate(containers: [
                     export DOCKER_BUILDKIT=0
                     docker version -f '{{.Server.Experimental}}'
                     docker build -t $kubemanager_registry_ip/testing/kwsp:latest /home/jenkins/agent/workspace/kwsp/
-                    docker build -t $kubemanager_registry_ip/testing/nginx-devops:latest /home/jenkins/agent/workspace/docker-nginx/stable/alpine
                     """
               }
           }
