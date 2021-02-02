@@ -15,7 +15,7 @@ podTemplate(containers: [
           stage('Clone'){
               container('jnlp'){
                     sh """
-                    git clone -b modify-repo-url https://github.com/ctlaltlaltc/docker-nginx.git /home/jenkins/agent/workspace/docker-nginx
+                    git clone -b modify-repo-url https://github.com/UnitedAlliedBusiness/testing.git /home/jenkins/agent/workspace/kwsp
                     """
               }
           }
@@ -37,7 +37,7 @@ podTemplate(containers: [
                     docker version 
                     export DOCKER_BUILDKIT=0
                     docker version -f '{{.Server.Experimental}}'
-                    docker build -t $kubemanager_registry_ip/testing/nginx-devops:latest /home/jenkins/agent/workspace/docker-nginx/stable/alpine
+                    docker build -t $kubemanager_registry_ip/testing/kwsp:latest /home/jenkins/agent/workspace/kwsp/stable/alpine
                     """
               }
           }
@@ -46,7 +46,7 @@ podTemplate(containers: [
                     sh """
                     docker logout
                     docker login -u secure365 -p @Demo123 $kubemanager_registry_ip
-                    docker push $kubemanager_registry_ip/testing/nginx-devops:latest
+                    docker push $kubemanager_registry_ip/testing/kwsp:latest
                     """
               }
           }
