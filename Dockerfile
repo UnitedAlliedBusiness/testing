@@ -1,5 +1,5 @@
 # Stage 0, "build-stage", based on Node.js, to build and compile the frontend
-FROM node:13.12.0-alpine	FROM tiangolo/node-frontend:10 as build-stage
+FROM tiangolo/node-frontend:10 as build-stage
 WORKDIR /app	WORKDIR /app
 COPY package*.json /app/	COPY package*.json /app/
 RUN npm install	
