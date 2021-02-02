@@ -40,7 +40,7 @@ podTemplate(containers: [
                     docker version 
                     export DOCKER_BUILDKIT=0
                     docker version -f '{{.Server.Experimental}}'
-                    docker build -t $kubemanager_registry_ip/testing/kwsp:latest /home/jenkins/agent/workspace/kwsp/stable/alpine
+                    docker build -t $kubemanager_registry_ip/testing/kwsp:latest /home/jenkins/agent/workspace/kwsp/
                     """
               }
           }
@@ -62,10 +62,10 @@ podTemplate(containers: [
                     fi
                     # rollout updates
                     kubemanager kubectl get deployments
-                    if ! kubemanager kubectl get deploy nginx; then 
-                        kubemanager kubectl create deployment nginx --image=$kubemanager_registry_ip/testing/nginx-devops:latest
+                    if ! kubemanager kubectl get deploy kwsp; then 
+                        kubemanager kubectl create deployment kwsp --image=$kubemanager_registry_ip/testing/kwsp:latest
                     else 
-                        kubemanager kubectl rollout restart deployment/nginx
+                        kubemanager kubectl rollout restart deployment/kwsp
                     fi
                     # expose services
                     if ! kubemanager kubectl get service nginx-http; then
