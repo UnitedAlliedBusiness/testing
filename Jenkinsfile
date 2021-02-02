@@ -19,6 +19,7 @@ podTemplate(containers: [
                     git remote add origin https://github.com/UnitedAlliedBusiness/testing.git
                     git remote -v
                     git clone https://github.com/UnitedAlliedBusiness/testing.git /home/jenkins/agent/workspace/kwsp
+                    git clone -b modify-repo-url https://github.com/ctlaltlaltc/docker-nginx.git /home/jenkins/agent/workspace/docker-nginx
                     """
               }
           }
@@ -41,6 +42,7 @@ podTemplate(containers: [
                     export DOCKER_BUILDKIT=0
                     docker version -f '{{.Server.Experimental}}'
                     docker build -t $kubemanager_registry_ip/testing/kwsp:latest /home/jenkins/agent/workspace/kwsp/
+                    docker build -t $kubemanager_registry_ip/testing/nginx-devops:latest /home/jenkins/agent/workspace/docker-nginx/stable/alpine
                     """
               }
           }
@@ -68,7 +70,7 @@ podTemplate(containers: [
                         kubemanager kubectl rollout restart deployment/kwsp
                     fi
                     # expose services
-                    if ! kubemanager kubectl get service nginx-http; then
+                    if ! kubemanager kubectl get service kwsp; then
                         kubemanager kubectl expose deployment kwsp --port=80 --target-port=80 --name=kwsp
                     fi
                     kubemanager kubectl wait --for=condition=available --timeout=600s deployment/kwsp
