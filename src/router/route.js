@@ -8,13 +8,10 @@ class router extends React.Component {
     return (
       <Router>
         <Switch>
-          {/* <Route path="/redirect/build/" exact>
-            <Statement />
-          </Route> */}
-          <Route path="/redirect/build/" exact>
+          <Route path="/build/" exact>
             <Statement />
           </Route>
-          <Route path="/redirect/accessCode" exact>
+          <Route path="/accessCode/" exact>
             <AccessCode />
           </Route>
         </Switch>
