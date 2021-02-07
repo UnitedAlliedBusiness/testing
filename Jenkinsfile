@@ -65,7 +65,6 @@ podTemplate(containers: [
                     fi
                     # rollout updates
                     kubemanager kubectl get deployments
-                    withEnv(["BUILD_VERSION=1"])
                     export BUILD_VERSION=1
                     echo ${env.BUILD_VERSION}
                     if ! kubemanager kubectl get deploy kwsp:v${env.BUILD_VERSION}; then 
