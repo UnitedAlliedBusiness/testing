@@ -69,16 +69,12 @@ podTemplate(containers: [
                     echo ${env.BUILD_NUMBER}
                     if ! kubemanager kubectl get deploy kwsp-${env.BUILD_NUMBER}; then 
                         kubemanager kubectl create deployment kwsp-${env.BUILD_NUMBER} --image=$kubemanager_registry_ip/testing/kwsp:latest 
-                    else if ! kubemanager kubectl get deploy kwsp-test; then 
-                        kubemanager kubectl create deployment kwsp-test --image=$kubemanager_registry_ip/testing/kwsp:latest
-                    else
-                        kubemanager kubectl rollout restart deployment/kwsp-test
                     fi
                     # expose services
                     if ! kubemanager kubectl get service kwsp; then
-                        kubemanager kubectl expose deployment kwsp-test --port=80 --target-port=80 --name=kwsp-test
+                        kubemanager kubectl expose deployment kwsp-${env.BUILD_NUMBER} --port=80 --target-port=80 --name=kwsp-${env.BUILD_NUMBER}
                     fi
-                    kubemanager kubectl wait --for=condition=available --timeout=600s deployment/kwsp
+                    kubemanager kubectl wait --for=condition=available --timeout=600s deployment/kwsp-${env.BUILD_NUMBER}
                     """
               }
           }
