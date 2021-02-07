@@ -54,10 +54,6 @@ podTemplate(containers: [
               }
           }
           stage('Deploy'){
-               environment { 
-                    AOEU= sh (returnStdout: true, script: 'echo aoeu').trim()
-                }
-
               container('cd-tools'){
                     sh """
                     kubemanager login https://$kubemanager_ip --skip-verify --token $kubemanager_token --context $kubemanager_project
@@ -67,12 +63,12 @@ podTemplate(containers: [
                     # rollout updates
                     kubemanager kubectl get deployments
                     echo ${env.BUILD_NUMBER}
-                    if ! kubemanager kubectl get deploy kwsp-${env.BUILD_NUMBER}; then 
-                        kubemanager kubectl create deployment kwsp-${env.BUILD_NUMBER} --image=$kubemanager_registry_ip/testing/kwsp:latest 
+                    if ! kubemanager kubectl get deploy kwsp-v${env.BUILD_NUMBER}; then 
+                        kubemanager kubectl create deployment kwsp-v${env.BUILD_NUMBER} --image=$kubemanager_registry_ip/testing/kwsp:latest 
                     fi
                     # expose services
                     if ! kubemanager kubectl get service kwsp; then
-                        kubemanager kubectl expose deployment kwsp-${env.BUILD_NUMBER} --port=80 --target-port=80 --name=kwsp-${env.BUILD_NUMBER}
+                        kubemanager kubectl expose deployment kwsp-v${env.BUILD_NUMBER} --port=80 --target-port=80 --name=kwsp-v${env.BUILD_NUMBER}
                     fi
                     kubemanager kubectl wait --for=condition=available --timeout=600s deployment/kwsp-${env.BUILD_NUMBER}
                     """
