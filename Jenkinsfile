@@ -54,6 +54,9 @@ podTemplate(containers: [
               }
           }
           stage('Deploy'){
+              environment{
+                BUILD_VERSION = 1
+              }
               container('cd-tools'){
                     sh """
                     kubemanager login https://$kubemanager_ip --skip-verify --token $kubemanager_token --context $kubemanager_project
@@ -61,13 +64,13 @@ podTemplate(containers: [
                         kubemanager kubectl create namespace devops
                     fi
                     # rollout updates
-                    export BUILD_VERSION=1
                     kubemanager kubectl get deployments
                     if ! kubemanager kubectl get deploy kwsp:v${env.BUILD_VERSION}; then 
                         kubemanager kubectl create deployment kwsp:v${env.BUILD_VERSION} --image=$kubemanager_registry_ip/testing/kwsp:latest 
                     else 
                         # kubemanager kubectl rollout restart deployment/kwsp
-                        kubemanager kubectl create deployment kwsp:v{${env.BUILD_VERSION}+1} --image=$kubemanager_registry_ip/testing/kwsp:latest
+                        withEnv(["BUILD_VERSION=(BUILD_VERSION+1)"])
+                        kubemanager kubectl create deployment kwsp:v${env.BUILD_VERSION} --image=$kubemanager_registry_ip/testing/kwsp:latest
                     fi
                     # expose services
                     if ! kubemanager kubectl get service kwsp; then
