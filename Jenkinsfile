@@ -54,9 +54,10 @@ podTemplate(containers: [
               }
           }
           stage('Deploy'){
-              environment{
-                BUILD_VERSION = 1
-              }
+               environment { 
+                    AOEU= sh (returnStdout: true, script: 'echo aoeu').trim()
+                }
+
               container('cd-tools'){
                     sh """
                     kubemanager login https://$kubemanager_ip --skip-verify --token $kubemanager_token --context $kubemanager_project
@@ -65,6 +66,7 @@ podTemplate(containers: [
                     fi
                     # rollout updates
                     kubemanager kubectl get deployments
+                    echo $AOEU
                     if ! kubemanager kubectl get deploy kwsp-v1; then 
                         kubemanager kubectl create deployment kwsp-v1 --image=$kubemanager_registry_ip/testing/kwsp:latest 
                     else 
