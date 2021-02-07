@@ -61,11 +61,13 @@ podTemplate(containers: [
                         kubemanager kubectl create namespace devops
                     fi
                     # rollout updates
+                    export BUILD_VERSION=1
                     kubemanager kubectl get deployments
-                    if ! kubemanager kubectl get deploy kwsp; then 
-                        kubemanager kubectl create deployment kwsp --image=$kubemanager_registry_ip/testing/kwsp:latest
+                    if ! kubemanager kubectl get deploy kwsp:v${env.BUILD_VERSION}; then 
+                        kubemanager kubectl create deployment kwsp:v${env.BUILD_VERSION} --image=$kubemanager_registry_ip/testing/kwsp:latest 
                     else 
-                        kubemanager kubectl rollout restart deployment/kwsp
+                        # kubemanager kubectl rollout restart deployment/kwsp
+                        kubemanager kubectl create deployment kwsp:v{${env.BUILD_VERSION}+1} --image=$kubemanager_registry_ip/testing/kwsp:latest
                     fi
                     # expose services
                     if ! kubemanager kubectl get service kwsp; then
