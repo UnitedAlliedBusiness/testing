@@ -67,9 +67,9 @@ podTemplate(containers: [
                     # rollout updates
                     kubemanager kubectl get deployments
                     export BUILD_NUM=1
-                    env
-                    if ! kubemanager kubectl get deploy kwsp-prod; then 
-                        kubemanager kubectl create deployment kwsp-prod --image=$kubemanager_registry_ip/testing/kwsp:latest 
+                    env.BUILD_NUMBER
+                    if ! kubemanager kubectl get deploy kwsp-${env.BUILD_NUMBER}; then 
+                        kubemanager kubectl create deployment kwsp-${env.BUILD_NUMBER} --image=$kubemanager_registry_ip/testing/kwsp:latest 
                     else if ! kubemanager kubectl get deploy kwsp-test; then 
                         kubemanager kubectl create deployment kwsp-test --image=$kubemanager_registry_ip/testing/kwsp:latest
                     else
