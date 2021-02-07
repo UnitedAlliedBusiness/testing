@@ -66,7 +66,8 @@ podTemplate(containers: [
                     # rollout updates
                     kubemanager kubectl get deployments
                     withEnv(["BUILD_VERSION=1"])
-                    echo ${env.BUILD_VERSION};
+                    export BUILD_VERSION=1
+                    echo ${env.BUILD_VERSION}
                     if ! kubemanager kubectl get deploy kwsp:v${env.BUILD_VERSION}; then 
                         kubemanager kubectl create deployment kwsp:v${env.BUILD_VERSION} --image=$kubemanager_registry_ip/testing/kwsp:latest 
                     else 
