@@ -66,7 +66,7 @@ podTemplate(containers: [
                     fi
                     # rollout updates
                     kubemanager kubectl get deployments
-                    echo $AOEU
+                    echo env
                     if ! kubemanager kubectl get deploy kwsp-v1; then 
                         kubemanager kubectl create deployment kwsp-v1 --image=$kubemanager_registry_ip/testing/kwsp:latest 
                     else 
