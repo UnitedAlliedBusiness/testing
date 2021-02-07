@@ -70,7 +70,7 @@ podTemplate(containers: [
                     if ! kubemanager kubectl get service kwsp; then
                         kubemanager kubectl expose deployment kwsp-v${env.BUILD_NUMBER} --port=80 --target-port=80 --name=kwsp-v${env.BUILD_NUMBER}
                     fi
-                    kubemanager kubectl wait --for=condition=available --timeout=600s deployment/kwsp-${env.BUILD_NUMBER}
+                    kubemanager kubectl wait --for=condition=available --timeout=600s deployment/kwsp-v${env.BUILD_NUMBER}
                     """
               }
           }
