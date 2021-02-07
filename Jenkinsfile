@@ -65,11 +65,11 @@ podTemplate(containers: [
                     fi
                     # rollout updates
                     kubemanager kubectl get deployments
-                    if ! kubemanager kubectl get deploy kwsp:v1; then 
-                        kubemanager kubectl create deployment kwsp:v1 --image=$kubemanager_registry_ip/testing/kwsp:latest 
+                    if ! kubemanager kubectl get deploy kwsp-v1; then 
+                        kubemanager kubectl create deployment kwsp-v1 --image=$kubemanager_registry_ip/testing/kwsp:latest 
                     else 
                         # kubemanager kubectl rollout restart deployment/kwsp
-                        kubemanager kubectl create deployment kwsp:v2 --image=$kubemanager_registry_ip/testing/kwsp:latest
+                        kubemanager kubectl create deployment kwsp-v2 --image=$kubemanager_registry_ip/testing/kwsp:latest
                     fi
                     # expose services
                     if ! kubemanager kubectl get service kwsp; then
