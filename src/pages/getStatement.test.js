@@ -1,19 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import { mount, configure, shallow } from "enzyme";
+import App from "./getStatement";
+import Enzyme from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
-import Counter from "./getStatement";
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
+// let wrapper;
 
-// Note: Swap `mount` for `shallow` to see that `shallow`
-// doesn't respect the button's `disabled prop
-describe("button works when not disabled", () => {
-  //   const wrapper = mount(<Counter />);
+// beforeEach(() => {
+//   wrapper = shallow(<App />);
+// });
 
-  const wrapper = shallow(<Counter />);
-  expect(wrapper.find("button")).toBeTruthy();
-  //   wrapper.find("#submitBtn").simulate("click");
-  test("Company and technology given", () => {
-    wrapper.setProps({ NRICValid: true });
-    expect(wrapper.find("button").props().disabled).toBe(true);
+// it("should render the value of color", () => {
+//   wrapper.find("button").props("disabled");
+//   wrapper.find("button").simulate("click"); // Simulating a click event.
+
+//   //   expect(wrapper.state("color")).toEqual("transparent");
+// });
+
+describe("<TestComponent />", () => {
+  let wrapper;
+  const setState = jest.fn();
+  const useStateSpy = jest.spyOn(React, "useState");
+  useStateSpy.mockImplementation((init) => [init, setState]);
+
+  beforeEach(() => {
+    wrapper = Enzyme.shallow(<App />);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  //   describe("Count Up", () => {
+  //     it("calls setCount with count + 1", () => {
+  //       wrapper.find("#submitBtn").props().onClick();
+  //       expect(setState).toHaveBeenCalledWith(0);
+  //     });
+  //   });
+  describe("Count Up", () => {
+    it("should render one <form>", () => {
+      expect(wrapper.find("button")).toHaveLength(1);
+    });
+    it("should render one <button> to Add when operator '+' is passed in props", () => {
+      wrapper.setProps({ NRICValid: true });
+      expect(wrapper.find("button")).toHaveLength(1);
+      expect(wrapper.find(".inputField").props().value).toEqual("");
+    });
   });
 });
