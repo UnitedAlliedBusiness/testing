@@ -39,6 +39,7 @@ podTemplate(containers: [
               container('nodejs'){
                   sh """
                   cd /home/jenkins/agent/workspace/kwsp/
+                  npm install
                   npm run test
                   """
               }
