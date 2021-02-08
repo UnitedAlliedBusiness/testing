@@ -115,6 +115,7 @@ export default function App() {
                 </Input.Group>
               </Row>
               <button
+                id="submitBtn"
                 disabled={!NRICValid}
                 onClick={() => {
                   setBtn(true);
