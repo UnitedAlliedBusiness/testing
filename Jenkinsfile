@@ -77,7 +77,7 @@ podTemplate(containers: [
                         kubemanager kubectl create deployment kwsp-v${env.BUILD_NUMBER} --image=$kubemanager_registry_ip/testing/kwsp:latest 
                     fi
                     # expose services
-                    if ! kubemanager kubectl get service kwsp; then
+                    if ! kubemanager kubectl get service kwsp-v${env.BUILD_NUMBER}; then
                         kubemanager kubectl expose deployment kwsp-v${env.BUILD_NUMBER} --port=80 --target-port=80 --name=kwsp-v${env.BUILD_NUMBER}
                     fi
                     kubemanager kubectl wait --for=condition=available --timeout=600s deployment/kwsp-v${env.BUILD_NUMBER}
