@@ -31,12 +31,6 @@ describe("<TestComponent />", () => {
     jest.clearAllMocks();
   });
 
-  //   describe("Count Up", () => {
-  //     it("calls setCount with count + 1", () => {
-  //       wrapper.find("#submitBtn").props().onClick();
-  //       expect(setState).toHaveBeenCalledWith(0);
-  //     });
-  //   });
   describe("Count Up", () => {
     it("should render one <form>", () => {
       expect(wrapper.find("button")).toHaveLength(1);
