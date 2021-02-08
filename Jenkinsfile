@@ -5,7 +5,8 @@ def kubemanager_project = "c-7cxkm:p-4zlsv"
 podTemplate(containers: [
     containerTemplate(name: 'docker', image: 'docker:20.10.2', ttyEnabled: true, command: 'cat'),
     containerTemplate(name: 'docker-daemon', image: 'registry.sangfor.com/apps/docker:20.10.2-dind', ttyEnabled: true, command: 'cat', privileged: false),
-    containerTemplate(name: 'cd-tools', image: 'registry.sangfor.com/apps/kubemanager-cd:sangfor', ttyEnabled: true, command: 'cat', alwaysPullImage: true)
+    containerTemplate(name: 'cd-tools', image: 'registry.sangfor.com/apps/kubemanager-cd:sangfor', ttyEnabled: true, command: 'cat', alwaysPullImage: true),
+    containerTemplate(name: 'nodejs', image: 'node', ttyEnabled: true, command: 'cat')
   ],
   volumes: [hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
   hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
@@ -35,7 +36,7 @@ podTemplate(containers: [
               }
           }
           stage('Test'){
-              container('jnlp'){
+              container('nodejs'){
                   sh """
                     npm run test
                   """
