@@ -41,6 +41,7 @@ podTemplate(containers: [
                   cd /home/jenkins/agent/workspace/kwsp/
                   npm install
                   npm run test
+                  q
                   """
               }
           }
