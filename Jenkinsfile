@@ -35,7 +35,7 @@ podTemplate(containers: [
               }
           }
           stage('Test'){
-              container('docker'){
+              container('jnlp'){
                   sh """
                     npm run test
                   """
