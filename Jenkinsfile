@@ -35,15 +35,10 @@ podTemplate(containers: [
               }
           }
           stage('Test'){
-              steps {
-                    script {
-                    sh 'npm run test'
-                    }
-              }
-              post{
-                    always {
-                    step([$class: 'CoberturaPublisher', coberturaReportFile: 'output/coverage/jest/cobertura-coverage.xml'])
-                }
+              container('docker'){
+                  sh """
+                    npm run test
+                  """
               }
           }
           stage('Build'){
