@@ -46,8 +46,8 @@
   min-width: 250px;
   min-height: 160px;
   /* Modify EPF Logo */
-  /*background-image: url("../logo/kwsp-logo-seeklogo.png");*/
-  background-image: url("../logo/epf.png");
+  background-image: url("../logo/kwsp-logo-seeklogo.png");
+  /*background-image: url("../logo/epf.png");*/
   background-position: center; /* Center the image */
   background-repeat: no-repeat; /* Do not repeat the image */
   background-size: contain; /* Resize the background image to cover the entire container */
