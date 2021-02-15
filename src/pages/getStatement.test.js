@@ -32,13 +32,22 @@ describe("<TestComponent />", () => {
   });
 
   describe("Count Up", () => {
-    it("should render one <form>", () => {
+    it("should render one button>", () => {
       expect(wrapper.find("button")).toHaveLength(1);
     });
-    it("should render one <button> to Add when operator '+' is passed in props", () => {
+    it("should render one <Input>", () => {
       wrapper.setProps({ NRICValid: true });
-      expect(wrapper.find("button")).toHaveLength(1);
+      expect(wrapper.find(".inputField")).toHaveLength(1);
       expect(wrapper.find(".inputField").props().value).toEqual("");
     });
+    // it("should update state on click", () => {
+    //   const setValid = jest.fn();
+    //   const wrapper = mount(<App onClick={setValid} />);
+    //   const handleClick = jest.spyOn(React, "useState");
+    //   handleClick.mockImplementation((NRICValid) => [NRICValid, setValid]);
+
+    //   wrapper.find(".inputField").simulate("click");
+    //   expect(setValid).toBeTruthy();
+    // });
   });
 });
